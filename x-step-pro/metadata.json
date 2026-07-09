@@ -1,0 +1,6 @@
+{
+  "name": "X-Step Pro",
+  "description": "A step tracking and spoofing application with real-time multiplier and auto-walk simulator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
