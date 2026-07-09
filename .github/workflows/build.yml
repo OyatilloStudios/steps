@@ -13,32 +13,15 @@ jobs:
     - name: 1. Kodni yuklab olish
       uses: actions/checkout@v4
 
-    - name: 2. ZIP faylni aniqlash va arxivdan ochish
-      run: |
-        # Repozitoriyadagi ZIP faylni qidirib topamiz
-        ZIP_FILE=$(find . -name "*.zip" -type f | head -n 1)
-        
-        if [ -z "$ZIP_FILE" ]; then
-          echo "⚠️ XATOLIK: Repozitoriyada hech qanday .zip fayli topilmadi!"
-          echo "Iltimos, arxiv faylingiz .zip kengaytmada ekanligini tekshiring."
-          ls -la
-          exit 1
-        fi
-        
-        echo "Topilgan arxiv: $ZIP_FILE"
-        echo "Arxiv ochilmoqda..."
-        unzip -q "$ZIP_FILE" -d .
-        echo "ZIP fayl muvaffaqiyatli ochildi."
-
-    - name: 3. Java 21 o'rnatish
+    - name: 2. Java 21 o'rnatish
       uses: actions/setup-java@v4
       with:
         java-version: '21'
         distribution: 'temurin'
 
-    - name: 4. Xatoliklarni tozalash va muhitni tayyorlash
+    - name: 3. Xatoliklarni tozalash va muhitni tayyorlash
       run: |
-        # ZIP ichidan chiqqan loyiha papkasini avtomat topish
+        # Loyiha qaysi papkada ekanligini avtomat topish (x-step-pro ichidagi app papkasini aniqlaydi)
         TARGET_DIR=$(dirname $(find . -name "app" -type d | head -n 1))
         cd $TARGET_DIR
         
@@ -57,7 +40,7 @@ jobs:
         keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
         echo "Keystore fayli yaratildi."
 
-    - name: 5. Toza Gradle 9.3.1 dvigatelini o'rnatish
+    - name: 4. Toza Gradle 9.3.1 dvigatelini o'rnatish
       run: |
         TARGET_DIR=$(dirname $(find . -name "app" -type d | head -n 1))
         cd $TARGET_DIR
@@ -65,14 +48,14 @@ jobs:
         wget -q https://services.gradle.org/distributions/gradle-9.3.1-bin.zip
         unzip -q gradle-9.3.1-bin.zip
 
-    - name: 6. Dasturni yig'ish (Build APK)
+    - name: 5. Dasturni yig'ish (Build APK)
       run: |
         TARGET_DIR=$(dirname $(find . -name "app" -type d | head -n 1))
         cd $TARGET_DIR
         
         ./gradle-9.3.1/bin/gradle assembleDebug -x lint -x test --no-daemon
 
-    - name: 7. Tayyor faylni olish
+    - name: 6. Tayyor faylni olish
       uses: actions/upload-artifact@v4
       with:
         name: X-Step-Pro-APK-Fayl
